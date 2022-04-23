@@ -6,16 +6,14 @@ import { useState, useEffect } from 'react';
 import Header from './Header';
 import Post from './Post';
 import NewPost from './NewPost';
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const [postsList, setPostsList] = useState([]);
-    const navigate = useNavigate();
     const [connectedUser, setConnectedUser] = useState(false); 
 
     useEffect(() => {
         Axios.get("http://localhost:3003/api/getUser",{ headers: {
-        "x-access-token": localStorage.getItem("token"),
+            "x-access-token": localStorage.getItem("token"),
         }}).then((response) => {
             setConnectedUser(response.data.auth);
         });

@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button';
 import Axios from 'axios';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
-import { useNavigate } from 'react-router-dom';
 import Role from '../helpers/roles';
 
 const Comment = ({comment}) => {

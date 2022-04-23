@@ -42,11 +42,6 @@ function Header() {
                         <Nav.Link href="/profil">Profil</Nav.Link>
                     </Nav.Item>
                  : "" }
-                {connectedUser ?  
-                    <Nav.Item>
-                        <Nav.Link href="/logout">Logout</Nav.Link>
-                    </Nav.Item>
-                 : "" }
             </Nav>
         </div>
   );

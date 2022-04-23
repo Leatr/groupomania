@@ -1,23 +1,15 @@
 const express = require("express");
-const multer = require("multer");
 const bodyParser = require('body-parser');
 const app = express();
-const mysql = require("mysql");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 const path = require('path');
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "social_network"
-});
 
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "http://localhost:3003"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true
 }));

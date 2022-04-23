@@ -14,15 +14,15 @@ function NewPost({ callbackAddPost }) {
     const [userInfo, setuserInfo] = useState({
         file:[],
         filepreview:null,
-       });
-    
-  const handleInputChange = (event) => {
-    setuserInfo({
-      ...userInfo,
-      file:event.target.files[0],
-      filepreview:URL.createObjectURL(event.target.files[0]),
     });
-  }
+    
+    const handleInputChange = (event) => {
+        setuserInfo({
+        ...userInfo,
+        file:event.target.files[0],
+        filepreview:URL.createObjectURL(event.target.files[0]),
+        });
+    }
 
     useEffect(() => {
       Axios.get("http://localhost:3003/api/getUser",{ headers: {

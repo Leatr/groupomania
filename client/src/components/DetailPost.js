@@ -41,10 +41,8 @@ function DetailPost() {
         params: {
             idPost: id
         }}).then((response) => {
-        setComments(response.data);
-    });
-
-
+            setComments(response.data);
+        });
     }, []);
 
     useEffect(() => {
@@ -59,7 +57,6 @@ function DetailPost() {
 
     useEffect(() => {
         if(comments.length > 0) {
-            console.log(comments.length)
             setHasComments(true);
         } 
     }, [comments]);
