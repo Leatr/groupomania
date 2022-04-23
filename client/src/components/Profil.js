@@ -4,22 +4,17 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Header from './Header';
 import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const Profil = () => {
-    const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [connectedUser, setConnectedUser] = useState(false); 
     
     useEffect(() => {
         Axios.get("http://localhost:3003/api/getUser",{ headers: {
-        "x-access-token": localStorage.getItem("token"),
+            "x-access-token": localStorage.getItem("token"),
         }}).then((response) => {
             setConnectedUser(response.data.auth);
-            if(!response.data.auth) {
-                navigate('/signup')
-            }
         });
       }, []);
  

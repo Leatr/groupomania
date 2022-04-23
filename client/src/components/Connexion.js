@@ -10,30 +10,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Connexion = () => {
- 
 
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const [loginStatus, setLoginStatus] = useState(false);
-
     const navigate = useNavigate();
-    // useEffect(() => {
-    //     if (loginStatus) {
-    //       navigate('/home');
-    //     }
-    // }, []);
     Axios.defaults.withCredentials = true;
     
     const submitUserConnexion = () => {
-        Axios.post('http://localhost:3003/api/login',{
+        Axios.post('http://localhost:3003/api/signin',{
             email: email,
             password: password
             }).then((response) => {
                 if(!response.data.auth) {
-                    setLoginStatus(false);
                 } else {
                     localStorage.setItem("token", response.data.token);
-                    setLoginStatus(true);
                     navigate('/home');
                 }
         });
@@ -62,7 +52,7 @@ const Connexion = () => {
                                 <Form.Control type="password" placeholder="Password" name="password" onChange={(e) => { setPassword(e.target.value); }}/>
                             </Form.Group>
                             <Button variant="primary"  onClick={submitUserConnexion}>
-                                S'inscrire
+                                Sign in
                             </Button>
                         </Form>
                     </Col>

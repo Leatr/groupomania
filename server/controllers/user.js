@@ -1,12 +1,4 @@
 const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "ROOT",
-    database: "social_network_bd"
-});
 const userModel = require('../models/user');
 
 exports.registration = (req, res) => {

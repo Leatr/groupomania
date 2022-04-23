@@ -20,9 +20,9 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="profil" element={<Profil />} />
-        <Route path="login" element={<Registration />} />
+        <Route path="signup" element={<Registration />} />
         <Route path="home" element={<Home />} />
-        <Route path="signup" element={<Connexion />} />
+        <Route path="signin" element={<Connexion />} />
         <Route path="posts/:id/:user" element={<DetailPost />} />
       </Routes>
     </BrowserRouter>,

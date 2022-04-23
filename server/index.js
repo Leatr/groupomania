@@ -15,7 +15,6 @@ const db = mysql.createPool({
     password: "root",
     database: "social_network"
 });
-const verifyJWT = require('./middleware/auth');
 
 app.use(cors({
     origin: ["http://localhost:3000"],
@@ -32,6 +31,7 @@ app.use(session({
     secret: "subscribe",
     resave: false, 
     saveUninitialized: false,
+    rolling: true,
     cookie: {
         express: 24 * 60 * 60 * 1000
     }
@@ -40,7 +40,6 @@ app.use(session({
 app.use('/image', express.static(path.join(__dirname, '/public_html/', 'uploads')));
 app.use('/api/', userRoutes);
 app.use('/api/', postRoutes);
-  
 app.listen(3003, () => {
     console.log("listen on 3003")
 });

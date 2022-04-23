@@ -8,7 +8,6 @@ import Post from './Post';
 import NewPost from './NewPost';
 import { useNavigate } from 'react-router-dom';
 
-
 const Home = () => {
     const [postsList, setPostsList] = useState([]);
     const navigate = useNavigate();
@@ -19,11 +18,9 @@ const Home = () => {
         "x-access-token": localStorage.getItem("token"),
         }}).then((response) => {
             setConnectedUser(response.data.auth);
-            if(!response.data.auth) {
-                navigate('/signup')
-            }
         });
       }, [connectedUser]);
+      
     useEffect(() => {
         Axios.get("http://localhost:3003/api/getAllPosts", {
             headers: {
@@ -34,13 +31,20 @@ const Home = () => {
         });
     }, []);
 
-    const listPosts = postsList.map((post) => <Post key={post.id} post={post}></Post>);
+    const callbackAddPost = (newPost) => {
+        setPostsList((postsList) => [
+          newPost,
+          ...postsList,
+        ]);
+    };
+
+    const listPosts = postsList.map((post, index) => <Post key={index} post={post}></Post>);
     return(
         <>
             <Header></Header>
             {connectedUser ?
             <Container>
-                <NewPost></NewPost>
+                <NewPost callbackAddPost={callbackAddPost}></NewPost>
                 <Row xs={1} md={3} className="g-4">
                     {listPosts}
                 </Row>

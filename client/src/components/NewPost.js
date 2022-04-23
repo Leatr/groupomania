@@ -1,24 +1,21 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
 import Axios from 'axios';
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-function NewPost() {
+function NewPost({ callbackAddPost }) {
+    const [currentUser, setCurrentUser] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    
     const [userInfo, setuserInfo] = useState({
         file:[],
         filepreview:null,
        });
     
-  const [isSucces, setSuccess] = useState(null);
-  
   const handleInputChange = (event) => {
     setuserInfo({
       ...userInfo,
@@ -26,12 +23,23 @@ function NewPost() {
       filepreview:URL.createObjectURL(event.target.files[0]),
     });
   }
-  
+
+    useEffect(() => {
+      Axios.get("http://localhost:3003/api/getUser",{ headers: {
+              "x-access-token": localStorage.getItem("token"),
+          }}).then((response) => {
+              if(response.data) {
+                  setCurrentUser(response.data.data[0]);
+              }
+          });
+    }, []);
+
     const submitPost = async () => {
         const formdata = new FormData(); 
         formdata.append('avatar', userInfo.file);
         formdata.append('title', title);
         formdata.append('description', description);
+        formdata.append('username', currentUser.firstname);
 
         Axios.post("http://localhost:3003/api/insertPost", 
         formdata,
@@ -40,12 +48,16 @@ function NewPost() {
                 "x-access-token": localStorage.getItem("token"),
                 "Content-type": "multipart/form-data",
             },
-        } ).then(res => { // then print response status
+        }).then(res => { // then print response status
             console.warn(res);
-            if(res.data.success === 1){
-              setSuccess("Image upload successfully");
-            }
-          });
+        });
+
+        callbackAddPost({
+          "name": title,
+          "description": description,
+          "image": userInfo.filepreview,
+          "username" :  currentUser.firstname
+        });
     }
 
 return (
@@ -65,12 +77,11 @@ return (
           <Form.Label>Select image: </Form.Label>
           <input type="file" className="form-control" name="upload_file"  onChange={handleInputChange} />
           </Form.Group>
-        <div>
+  <Container>
             {userInfo.filepreview !== null ? 
             <img style={{width: "200px"}}  className="previewimg"  src={userInfo.filepreview} alt="UploadImage" />
         : null}
-        </div>
-
+     </Container>
         <Button className='mt-2' variant="primary" onClick={submitPost}>
             Submit
         </Button>

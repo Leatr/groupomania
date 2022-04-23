@@ -7,11 +7,11 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import parse from "html-react-parser";
 import Comment from "./Comment";
 import Header from "./Header";
 import { useNavigate } from 'react-router-dom';
 import Role from '../helpers/roles';
+import * as Icon from 'react-bootstrap-icons';
 
 function DetailPost() {
     const { id } = useParams();
@@ -20,7 +20,9 @@ function DetailPost() {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [currentUser, setCurrentUser] = useState([]);
+    const [hasComments, setHasComments] = useState(false);
     const navigate = useNavigate();
+    let formatedCreatedDate;
 
     useEffect(() => {
         Axios.get("http://localhost:3003/api/getOnePost",{ headers: {
@@ -42,29 +44,44 @@ function DetailPost() {
         setComments(response.data);
     });
 
- 
-    Axios.get("http://localhost:3003/api/getUser",{ headers: {
-        "x-access-token": localStorage.getItem("token"),
+
+    }, []);
+
+    useEffect(() => {
+        Axios.get("http://localhost:3003/api/getUser",{ headers: {
+                "x-access-token": localStorage.getItem("token"),
             }}).then((response) => {
                 if(response.data) {
                     setCurrentUser(response.data.data[0]);
                 }
-                if(!response.data.auth) {
-                    navigate('/signup')
-                }
             });
     }, []);
 
+    useEffect(() => {
+        if(comments.length > 0) {
+            console.log(comments.length)
+            setHasComments(true);
+        } 
+    }, [comments]);
+
     const submitComment = () => {
-        Axios.post("http://localhost:3003/api/insertComment", {
+        const req = Axios.post("http://localhost:3003/api/insertComment", {
             idPost: id,
-            idUser: user,
             comment: comment, 
-            firstName: currentUser.firstname
+            firstName: currentUser.firstname,
         },
         {headers: {
             "x-access-token": localStorage.getItem("token"),
         }});
+        req.then((res) => {return console.log("test")}); 
+ 
+        setComments((comments) => [
+            {
+                "comment": comment,
+                "firstname": currentUser.firstname,
+              },
+              ...comments,
+          ]);
     }
 
     const deletePost = () => {
@@ -73,7 +90,8 @@ function DetailPost() {
             "x-access-token": localStorage.getItem("token"),
         },
         data: {
-            image: detailPost.image
+            image: detailPost.image,
+            hasComments: hasComments,
         }});
         navigate('/home');
     }
@@ -82,25 +100,43 @@ function DetailPost() {
   
     const handleDelete = () => {
         if(parseInt(currentUser.iduser) === parseInt(user) || Role.admin === currentUser.role) {
-            return  <Button variant="danger" onClick={deletePost}> Delete </Button>
+            return  <Button variant="danger" onClick={deletePost}> <Icon.Trash /> </Button>
         } 
     }
 
+             
+    if(detailPost.created_at) {
+        const date = detailPost.created_at.split('T')[0];
+        const time = detailPost.created_at.split('T')[1].split('.')[0];
+      
+        const year = date.split('-')[0];
+        const month = date.split('-')[1];
+        const day = date.split('-')[2];
 
+        const postedDate = day + '/' + month + '/' + year + ' at ' + time;
+        formatedCreatedDate = postedDate;
+    }
+    
 return (
     <>
     <Header></Header>
     <div className="mx-auto col-6 m-3">
         <Card className="text-center">
-            <Card.Header>{detailPost.name}</Card.Header>
-            <Card.Img style={{width: "33%"}} className={'rounded mx-auto d-block m-2'} variant="top" src={detailPost.image} />
+            <Card.Header className="fw-bold">{detailPost.name}</Card.Header>
+            {detailPost.image ? <Card.Img style={{width: "33%"}} className={'rounded mx-auto d-block m-2'} variant="top" src={detailPost.image} /> : '' }
                 <Card.Body>
                     <Card.Text>
-                        {detailPost.description}
+                    <div dangerouslySetInnerHTML={{ __html: detailPost.description }} />
                     </Card.Text>
-                    {handleDelete()}
                 </Card.Body>
-            <Card.Footer className="text-muted">2 days ago</Card.Footer>
+            <Card.Footer>
+                <div className="text-muted float-end">
+                    {'Postet by ' + detailPost.username + ' on ' + formatedCreatedDate}
+                </div>
+                <div className="text-muted float-start">
+                    {handleDelete()}
+                </div>
+            </Card.Footer>
         </Card>
         
         <Form className="mb-3 mt-3 border-top border-info">

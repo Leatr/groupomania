@@ -2,8 +2,8 @@ const mysql = require("mysql");
 const db = mysql.createPool({
     host: "localhost",
     user: "root",
-    password: "ROOT",
-    database: "social_network_bd"
+    password: "root",
+    database: "social_network"
 });
 const multer = require("multer");
 const userPost = require('../models/post');
@@ -32,25 +32,26 @@ exports.insertPost = (req, res) => {
     try {
         // 'avatar' is the name of our file input field in the HTML form
         let upload = multer({ storage: storage}).single('avatar');
-   
+
         upload(req, res, function(err) {
             const title = req.body.title;
             const description = req.body.description;
-            if (!req.file) {
-                return res.send('Please select an image to upload');
+            const username = req.body.username;
+            if(req.file) {
+                if (err instanceof multer.MulterError) {
+                    return res.send(err);
+                }
+                else if (err) {
+                    return res.send(err);
+                }
+    
+                const classifiedsadd = {
+                    image: `${req.protocol}://${req.get('host')}/image/${req.file.filename}`
+                };
+                userPost.insertPost(title, description, classifiedsadd, username, req, res);
+            } else {
+                userPost.insertPost(title, description, classifiedsadd=null, username, req, res);
             }
-            else if (err instanceof multer.MulterError) {
-                return res.send(err);
-            }
-            else if (err) {
-                return res.send(err);
-            }
-
-            const classifiedsadd = {
-				image: `${req.protocol}://${req.get('host')}/image/${req.file.filename}`
-			};
-            console.log(classifiedsadd)
-            userPost.insertPost(title, description, classifiedsadd, req, res);
         }); 
     } catch (err) {
         console.log(err)
@@ -74,24 +75,32 @@ exports.deletePost = (req, res) => {
     const idPost = req.params.idPost;
     const idUser = req.params.idUser;
     let image = req.body.image;
+    const hasComments = req.body.hasComments;
+
     if(image) {
         image = image.split(`${req.protocol}://${req.get('host')}/image/`)[1];
         fs.unlinkSync(`public_html/uploads/${image}`);
-    }
-    userPost.deletePost(idPost, idUser);
+    } 
+    userPost.deletePost(idPost, idUser, hasComments);
 };
 
 exports.insertComment = (req, res) => {
     const idPost = req.body.idPost;
-    const idUser = req.body.idUser;
+    const idUser = req.userId;
     const comment = req.body.comment;
     const firstName = req.body.firstName;
     
- 
     userPost.insertComment(idPost, idUser, comment, firstName);
 };
 
 exports.getComments = (req, res) => {
     const idPost = req.query.idPost;
     userPost.getComments(idPost, req, res);
+};
+
+
+exports.deleteComment = (req, res) => {
+    const idComment = req.body.idComment;
+    const idUser = req.body.idUser;
+    userPost.deleteComment(idComment, idUser, req, res);
 };
