@@ -6,7 +6,6 @@ exports.registration = (req, res) => {
     const lastName = req.body.lastName;
     const password = req.body.password;
     const email = req.body.email;
-
     bcrypt.hash(password, 10, (err,  hashedPassword) => {
         if(err) {
             console.log(err);

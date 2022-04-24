@@ -51,7 +51,7 @@ exports.insertPost = (title, description, classifiedsadd, username, req, res) =>
     }
 }
 
-exports.updatePost = (idPost, idUser, name, description) => {
+/*exports.updatePost = (idPost, idUser, name, description) => {
     try {
         const sqlUpdate = "UPDATE posts SET name = ?, description = ? WHERE id_user = ? AND id = ?";
         db.query(sqlUpdate, [name, description, idUser, idPost], (err, result) => {
@@ -60,7 +60,7 @@ exports.updatePost = (idPost, idUser, name, description) => {
     } catch (err) {
         console.log(err);
     }
-}
+}*/
 
 exports.deletePost = (idPost, idUser, hasComments) => {
     if(hasComments) {

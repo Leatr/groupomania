@@ -23,7 +23,8 @@ function DetailPost() {
     const [hasComments, setHasComments] = useState(false);
     const navigate = useNavigate();
     let formatedCreatedDate;
-
+    
+//execute un bout de code au chargement de la page 
     useEffect(() => {
         Axios.get("http://localhost:3003/api/getOnePost",{ headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -101,7 +102,7 @@ function DetailPost() {
         } 
     }
 
-             
+     //la date        
     if(detailPost.created_at) {
         const date = detailPost.created_at.split('T')[0];
         const time = detailPost.created_at.split('T')[1].split('.')[0];

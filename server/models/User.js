@@ -11,7 +11,7 @@ const db = mysql.createPool({
 exports.setUser = (firstName, lastName, email, hashedPassword) => {
     try {
         const sqlInsert = "INSERT INTO users (lastname, firstname, password, email) VALUES (?,?,?,?);";
-        db.query(sqlInsert, [lastName, firstName, hashedPassword, null], (err, result) => {
+        db.query(sqlInsert, [lastName, firstName, hashedPassword, email], (err, result) => {
             console.log(err)
         });
     } catch (err) {
