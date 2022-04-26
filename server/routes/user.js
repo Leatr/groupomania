@@ -9,5 +9,6 @@ router.get('/getUser', verifyJWT, userCtrl.getUser);
 router.put('/updateUserPassword', verifyJWT, userCtrl.updateUserPassword);
 router.put('/updateUserEmail', verifyJWT, userCtrl.updateUserEmail);
 router.delete('/deleteUser', verifyJWT, userCtrl.deleteUser);
+router.get('/logout', verifyJWT, userCtrl.logout);
 
 module.exports = router;

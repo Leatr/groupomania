@@ -18,7 +18,6 @@ const Registration = () => {
 
 
     const submitUser = () => {
-
         Axios.post("http://localhost:3003/api/signup", {
             firstName: firstName,
             lastName: lastName,

@@ -20,6 +20,13 @@ exports.login = (req, res) => {
     userModel.loginUser(email, password, req, res);
 };
 
+exports.logout = (req, res) => {
+    //Destroy session
+    req.session.destroy(function(err) {
+        // cannot access session here
+     })
+};
+
 exports.getUser = (req, res) => {
     userModel.getUser(req, res);
 };

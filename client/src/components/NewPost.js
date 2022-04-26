@@ -76,12 +76,11 @@ return (
         <Form.Group className="mb-3" controlId="image">
           <Form.Label>Select image: </Form.Label>
           <input type="file" className="form-control" name="upload_file"  onChange={handleInputChange} />
-          </Form.Group>
-  <Container>
+        </Form.Group>
+        <Container>
             {userInfo.filepreview !== null ? 
-            <img style={{width: "200px"}}  className="previewimg"  src={userInfo.filepreview} alt="UploadImage" />
-        : null}
-     </Container>
+            <img style={{width: "200px"}}  className="previewimg"  src={userInfo.filepreview} alt="UploadImage" /> : null}
+        </Container>
         <Button className='mt-2' variant="primary" onClick={submitPost}>
             Submit
         </Button>

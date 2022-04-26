@@ -11,5 +11,6 @@ router.delete('/deletePost/:idPost/:idUser',verifyJWT, postCtrl.deletePost);
 router.post('/insertComment',verifyJWT, postCtrl.insertComment);
 router.get('/getComments',verifyJWT, postCtrl.getComments);
 router.delete('/deleteComment',verifyJWT, postCtrl.deleteComment);
-
+router.put('/updatePost',verifyJWT, postCtrl.updatePost);
+ 
 module.exports = router;

@@ -20,7 +20,7 @@ exports.getAllPosts = (req, res) => {
 
 exports.getOnePost = (id, idUser, req, res) => {
     try {
-        const sqlSelect = "SELECT * FROM posts WHERE id = ? AND id_user = ?;";
+        const sqlSelect = "SELECT p.*, COUNT(c.id) as nbComments FROM posts p LEFT JOIN comments c ON(p.id = c.id_post) WHERE p.id = ? AND p.id_user = ?;";
         db.query(sqlSelect, [id, idUser], (err, result) => {
             if(err) {
                 console.log(err);
@@ -51,17 +51,6 @@ exports.insertPost = (title, description, classifiedsadd, username, req, res) =>
     }
 }
 
-/*exports.updatePost = (idPost, idUser, name, description) => {
-    try {
-        const sqlUpdate = "UPDATE posts SET name = ?, description = ? WHERE id_user = ? AND id = ?";
-        db.query(sqlUpdate, [name, description, idUser, idPost], (err, result) => {
-            if(err) console.log(err);
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}*/
-
 exports.deletePost = (idPost, idUser, hasComments) => {
     if(hasComments) {
         try {
@@ -81,6 +70,22 @@ exports.deletePost = (idPost, idUser, hasComments) => {
         } catch (err) {
             console.log(err);
         }
+    }
+}
+
+exports.updatePost = (idPost, idUser, title, description, classifiedsadd, req) => {
+    if(classifiedsadd) {
+        classifiedsadd = classifiedsadd.image;
+    } else {
+        classifiedsadd = null;
+    }
+    try {
+        const sqlUpdate = "UPDATE posts SET name = ?, description = ?, image = ? WHERE id_user = ? AND id = ?";
+        db.query(sqlUpdate, [title, description, classifiedsadd, idUser, idPost], (err, result) => {
+            if(err) console.log(err);
+        });
+    } catch (err) {
+        console.log(err);
     }
 }
 
